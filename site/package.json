@@ -1,0 +1,26 @@
+{
+  "name": "globalpenfriends-showcase",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev --host",
+    "build": "astro build",
+    "preview": "astro preview --host",
+    "check": "astro check",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "@types/qrcode": "^1.5.6",
+    "astro": "^7.3.5",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@playwright/test": "1.63.0",
+    "typescript": "^6.0.0"
+  }
+}

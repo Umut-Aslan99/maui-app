@@ -1,0 +1,82 @@
+---
+import QRCode from 'qrcode';
+import Icon from './Icon.astro';
+import { t, links, demoLogin, type Lang } from '../data/content';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = t[lang].download;
+const qr = await QRCode.toString(new URL(links.apk, 'https://maui.umut-aslan.dev').href, {
+  type: 'svg', margin: 1, errorCorrectionLevel: 'M', color: { dark: '#111214', light: '#ffffff' },
+});
+---
+<section id="download">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="copy">
+        <p class="eyebrow"><b>05</b>{t[lang].nav.download}</p>
+        <h2>{c.title}</h2>
+        <p class="intro">{c.intro}</p>
+        <ol class="steps">{c.steps.map((s) => <li>{s}</li>)}</ol>
+        <div class="actions">
+          <a class="btn btn-primary" href={links.apk} download><Icon name="download" />{c.apk}</a>
+          <span class="mono size">{c.size}</span>
+        </div>
+        <p class="ios">{c.ios}</p>
+      </div>
+      <div class="aside">
+        <div class="qr" set:html={qr} role="img" aria-label="QR-Code: APK-Download"></div>
+        <div class="login">
+          <p class="mono lbl">{c.login}</p>
+          <button type="button" data-copy={demoLogin.email}><span>{demoLogin.email}</span><Icon name="copy" /></button>
+          <button type="button" data-copy={demoLogin.password}><span>{demoLogin.password}</span><Icon name="copy" /></button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="note reveal">
+      <strong>{t[lang].disclaimer.title}</strong>
+      <p>{t[lang].disclaimer.text}</p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .panel {
+    position: relative; overflow: hidden; border-radius: 20px; background: #000; color: #f4f1ea;
+    display: grid; grid-template-columns: 1fr auto; gap: 40px; padding: clamp(28px, 6vw, 64px);
+  }
+  .panel::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(520px circle at 90% 0%, rgb(232 131 74 / 0.25), transparent 60%); }
+  .panel::after { content: ''; position: absolute; left: 0; bottom: 0; height: 7px; width: 40%; background: #e8834a; }
+  .panel > * { position: relative; }
+  .eyebrow { color: #a7ab8c; }
+  .eyebrow::after { background: rgb(255 255 255 / 0.16); }
+  h2 { font-size: clamp(2rem, 5vw, 3.2rem); margin-top: 18px; }
+  .intro { margin-top: 14px; color: #c9c5bc; max-width: 52ch; }
+  .steps { margin: 22px 0 0; padding-left: 20px; display: grid; gap: 8px; color: #e8e4dc; }
+  .steps li::marker { color: #e8834a; font-weight: 700; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 28px; }
+  .btn-primary { background: #e8834a; border-color: #e8834a; color: #1a0d05; }
+  .size { font-size: 0.8rem; color: #a7ab8c; }
+  .ios { margin-top: 16px; font-size: 0.85rem; color: #8b877f; }
+  .aside { display: flex; flex-direction: column; gap: 18px; align-items: center; }
+  .qr { width: 180px; padding: 10px; background: #fff; border-radius: 14px; }
+  .qr :global(svg) { display: block; width: 100%; height: auto; }
+  .login { display: grid; gap: 6px; width: 220px; }
+  .lbl { font-size: 0.72rem; color: #a7ab8c; text-transform: uppercase; letter-spacing: 0.08em; }
+  .login button {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px;
+    background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.14); color: #f4f1ea; font: 0.82rem var(--font-mono); cursor: pointer;
+  }
+  .login button:hover { border-color: #e8834a; }
+  .login button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .login :global(svg) { width: 14px; height: 14px; flex: none; }
+  .note { margin-top: 24px; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; padding: 18px 22px; border-radius: 14px; border: 1px solid var(--line-strong); font-size: 0.88rem; color: var(--text-2); }
+  .note strong { color: var(--text); }
+  @media (max-width: 760px) {
+    .panel { grid-template-columns: 1fr; }
+    .aside { align-items: flex-start; }
+    .qr { display: none; }
+    .note { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Phone from './Phone.astro';
+import { t, chapters, type Lang } from '../data/content';
+import { appShots } from '../lib/images';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = t[lang].screens;
+const big = Object.fromEntries(await Promise.all(chapters.map(async (ch) =>
+  [ch.id, (await getImage({ src: appShots[ch.app]!, width: 720, format: 'webp' })).src] as const)));
+---
+<section id="screens">
+  <div class="wrap">
+    <p class="eyebrow reveal"><b>03</b>{t[lang].nav.screens}</p>
+    <h2 class="section-title reveal">{c.title}</h2>
+    <p class="section-intro reveal">{c.intro}</p>
+  </div>
+  <ul class="rail" aria-label={c.title}>
+    {chapters.map((ch) => (
+      <li>
+        <button type="button" data-zoom={big[ch.id]} data-caption={ch.title[lang]} aria-label={ch.title[lang]}>
+          <Phone size="sm"><Image src={appShots[ch.app]!} alt={ch.title[lang]} width={380} /></Phone>
+        </button>
+        <span>{ch.title[lang]}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .rail {
+    list-style: none; margin: 44px 0 0; padding: 8px max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter))) 24px;
+    display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin;
+  }
+  li { flex: none; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  button { padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 28px; transition: transform 0.4s var(--ease); }
+  button:hover { transform: translateY(-6px); }
+  span { font-size: 0.85rem; color: var(--text-2); max-width: 200px; text-align: center; }
+</style>

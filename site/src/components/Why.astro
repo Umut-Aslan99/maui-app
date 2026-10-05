@@ -1,0 +1,40 @@
+---
+import Icon from './Icon.astro';
+import { t, type Lang } from '../data/content';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = t[lang].why;
+const icons = ['phone', 'bell', 'refresh'] as const;
+---
+<section id="why">
+  <div class="wrap">
+    <p class="eyebrow reveal"><b>01</b>{t[lang].nav.why}</p>
+    <h2 class="section-title reveal">{c.title}</h2>
+    <p class="section-intro reveal">{c.intro}</p>
+    <div class="cards">
+      {c.items.map(([name, before, after], i) => (
+        <article class="card reveal" style={`--i:${i}`}>
+          <span class="icon"><Icon name={icons[i]!} /></span>
+          <h3>{name}</h3>
+          <p class="before"><span>{c.before}</span>{before}</p>
+          <p class="after"><span>{c.after}</span>{after}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 48px; }
+  article { padding: 26px; display: flex; flex-direction: column; gap: 14px; }
+  .icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--glow); color: var(--accent); }
+  .icon :global(svg) { width: 22px; height: 22px; }
+  h3 { font-size: 1.25rem; }
+  p { font-size: 0.94rem; }
+  p span { display: block; font: 600 0.68rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+  .before { color: var(--text-2); }
+  .after { padding-top: 14px; border-top: 1px dashed var(--line-strong); }
+  .after span { color: var(--accent); }
+  @media (max-width: 860px) { .cards { grid-template-columns: 1fr; } }
+</style>

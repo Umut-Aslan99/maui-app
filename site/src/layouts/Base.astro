@@ -1,0 +1,107 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import { t, links, type Lang } from '../data/content';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = t[lang];
+const home = lang === 'de' ? '/' : '/en/';
+const other = lang === 'de' ? '/en/' : '/';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = Object.entries(c.nav) as [string, string][];
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{c.meta.title}</title>
+  <meta name="description" content={c.meta.description} />
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="de" href={new URL('/', Astro.site)} />
+  <link rel="alternate" hreflang="en" href={new URL('/en/', Astro.site)} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#000000" />
+  <meta property="og:title" content={c.meta.title} />
+  <meta property="og:description" content={c.meta.description} />
+  <meta property="og:url" content={canonical} />
+  <script is:inline>
+    try { const s = localStorage.getItem('theme'); if (s) document.documentElement.dataset.theme = s; } catch {}
+    document.documentElement.classList.add('js');
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">{lang === 'de' ? 'Zum Inhalt' : 'Skip to content'}</a>
+  <header class="band">
+    <div class="wrap band-inner">
+      <div class="brand"><a class="who" href={links.portfolio}>Umut Aslan</a><span class="sep">/</span><a class="what" href={home}>GlobalPenfriends App</a></div>
+      <nav aria-label="Main"><ul>{nav.map(([id, label]) => <li><a href={`${home}#${id}`}>{label}</a></li>)}</ul></nav>
+      <div class="tools">
+        <a class="tool" href={other} hreflang={lang === 'de' ? 'en' : 'de'}>{lang === 'de' ? 'EN' : 'DE'}<span class="sr-only"> – {c.switchLang}</span></a>
+        <button class="tool" id="theme" type="button" aria-label="Theme"><Icon name="sun" class="i-sun" /><Icon name="moon" class="i-moon" /></button>
+      </div>
+    </div>
+    <div class="bar" aria-hidden="true"></div>
+  </header>
+
+  <main id="main"><slot /></main>
+
+  <footer class="foot">
+    <div class="wrap foot-inner">
+      <span>{c.footer.by} <a href={links.portfolio}>Umut Aslan</a></span>
+      <span class="links">
+        <a href={`${links.portfolio}/impressum/`}>{c.footer.imprint}</a>
+        <a href={`${links.portfolio}/datenschutz/`}>{c.footer.privacy}</a>
+        <a href={links.repo} target="_blank" rel="noopener">GitHub</a>
+      </span>
+    </div>
+  </footer>
+
+  <dialog id="lightbox" aria-label="Bild">
+    <button class="lb-close" type="button" data-close aria-label={c.close}><Icon name="close" /></button>
+    <figure><img alt="" /><figcaption></figcaption></figure>
+  </dialog>
+
+  <script>
+    import { init } from '../lib/client';
+    init();
+  </script>
+</body>
+</html>
+
+<style>
+  .band { position: sticky; top: 0; z-index: 50; background: rgb(0 0 0 / 0.86); color: #f4f1ea; backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); }
+  .band-inner { display: flex; align-items: center; gap: 20px; height: 60px; }
+  .brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; font: 600 1rem/1 var(--font-display); white-space: nowrap; min-width: 0; }
+  .who { color: #c9c5bc; text-decoration: none; }
+  .who:hover { color: #fff; }
+  .sep { color: #6c6c73; }
+  .what { color: #fff; text-decoration: none; overflow: hidden; text-overflow: ellipsis; }
+  .bar { height: 5px; background: #e8834a; width: calc(38% + 62% * var(--progress, 0)); }
+  nav { margin-left: auto; }
+  nav ul { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  nav a { display: block; padding: 8px 12px; border-radius: 999px; text-decoration: none; font-size: 0.9rem; color: #c9c5bc; }
+  nav a:hover { color: #fff; background: rgb(255 255 255 / 0.08); }
+  .tools { display: flex; gap: 6px; }
+  .tool { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.14); background: none; color: #f4f1ea; cursor: pointer; font: 600 0.72rem/1 var(--font-mono); text-decoration: none; }
+  .tool:hover { border-color: rgb(255 255 255 / 0.4); }
+  .tool :global(svg) { width: 16px; height: 16px; }
+  :global([data-theme-resolved='light'] .i-sun), :global([data-theme-resolved='dark'] .i-moon) { display: none; }
+  @media (max-width: 860px) { nav { display: none; } .tools { margin-left: auto; } }
+  @media (max-width: 420px) { .who, .sep { display: none; } }
+
+  .foot { border-top: 1px solid var(--line); padding: 28px 0 36px; font-size: 0.88rem; color: var(--text-2); }
+  .foot-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; }
+  .foot a { color: inherit; }
+  .foot a:hover { color: var(--accent); }
+  .links { display: flex; gap: 20px; }
+
+  dialog { border: 0; padding: 0; background: transparent; max-width: min(96vw, 1100px); max-height: 94vh; overflow: visible; }
+  dialog::backdrop { background: rgb(0 0 0 / 0.82); backdrop-filter: blur(4px); }
+  dialog figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  dialog img { max-width: min(96vw, 1100px); max-height: 84vh; width: auto; height: auto; border-radius: 10px; background: #fff; }
+  dialog figcaption { color: #e8e4dc; font-size: 0.9rem; text-align: center; }
+  .lb-close { position: absolute; top: -14px; right: -14px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: #e8834a; color: #1a0d05; display: grid; place-items: center; cursor: pointer; z-index: 1; }
+  .lb-close :global(svg) { width: 18px; height: 18px; }
+</style>

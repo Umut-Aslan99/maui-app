@@ -1,0 +1,59 @@
+---
+import Icon from './Icon.astro';
+import { t, links, type Lang } from '../data/content';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = t[lang].tech;
+const stack = ['.NET 9', '.NET MAUI', 'C#', 'XAML', 'CommunityToolkit.Mvvm', 'Dependency Injection', 'xUnit', 'Moq', 'FluentAssertions', 'BCrypt', 'Keychain / Keystore'];
+---
+<section id="tech">
+  <div class="wrap">
+    <p class="eyebrow reveal"><b>04</b>{t[lang].nav.tech}</p>
+    <h2 class="section-title reveal">{c.title}</h2>
+    <p class="section-intro reveal">{c.intro}</p>
+
+    <div class="grid">
+      <ol class="layers reveal" aria-label="Clean Architecture">
+        {c.layers.map(([name, text], i) => (
+          <li style={`--d:${i}`}><strong>{name}</strong><span>{text}</span></li>
+        ))}
+      </ol>
+      <div class="side">
+        <div class="card box reveal">
+          <h3 class="label mono">{c.projects}</h3>
+          <ul class="projects">{c.projectList.map(([name, text]) => <li><code>{name}</code><span>{text}</span></li>)}</ul>
+        </div>
+        <div class="card box reveal">
+          <h3 class="label mono">{c.status}</h3>
+          <p>{c.statusText}</p>
+        </div>
+        <div class="chips reveal">{stack.map((s) => <span class="chip">{s}</span>)}</div>
+        <a class="btn reveal" href={links.repo} target="_blank" rel="noopener"><Icon name="github" />{c.repo}<Icon name="external" /></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 48px; align-items: start; }
+  .layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .layers li {
+    display: flex; flex-direction: column; gap: 2px; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--accent) calc(4% + var(--d) * 4%), var(--surface)); margin-inline: calc(var(--d) * 10px);
+  }
+  .layers strong { font-family: var(--font-display); font-size: 1.05rem; }
+  .layers span { color: var(--text-2); font-size: 0.9rem; }
+  .side { display: grid; gap: 16px; }
+  .box { padding: 20px 22px; }
+  .box::before { display: none; }
+  .label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px; font-weight: 500; }
+  .box p { color: var(--text-2); font-size: 0.94rem; }
+  .projects { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .projects li { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; font-size: 0.9rem; }
+  code { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text); }
+  .projects span { color: var(--text-2); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .btn { justify-self: start; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+</style>

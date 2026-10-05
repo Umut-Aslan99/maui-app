@@ -1,0 +1,10 @@
+site/node_modules
+site/dist
+site/.astro
+site/test-results
+site/playwright-report
+media/
+html/*.mp4
+html/*.apk
+html/
+docker-compose.legacy.yml

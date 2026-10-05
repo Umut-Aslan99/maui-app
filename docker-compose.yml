@@ -1,0 +1,26 @@
+# maui.umut-aslan.dev – presentation of the GlobalPenfriends .NET MAUI app (static Astro site).
+services:
+  web:
+    build:
+      context: ./site
+      args:
+        GIT_SHA: ${GIT_SHA:-local}
+    image: umutaslan/maui-showcase:${GIT_SHA:-local}
+    container_name: maui-presentation
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/var/cache/nginx, /var/run, /tmp]
+    security_opt: [no-new-privileges:true]
+    volumes:
+      - ./media:/usr/share/nginx/html/media:ro
+    networks: [proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.maui.rule=Host(`maui.umut-aslan.dev`)
+      - traefik.http.routers.maui.entrypoints=websecure
+      - traefik.http.routers.maui.tls.certresolver=myresolver
+      - traefik.http.services.maui.loadbalancer.server.port=80
+
+networks:
+  proxy:
+    external: true

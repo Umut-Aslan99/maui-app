@@ -1,0 +1,20 @@
+---
+/** A neutral phone frame around a screenshot or the demo video (9:16 content). */
+interface Props { class?: string; size?: 'sm' | 'md' | 'lg'; }
+const { class: cls, size = 'md' } = Astro.props;
+---
+<div class:list={['phone', size, cls]}><div class="screen"><slot /></div></div>
+
+<style>
+  .phone {
+    --w: 300px;
+    width: var(--w); max-width: 100%; padding: 10px; border-radius: 38px; position: relative;
+    background: linear-gradient(145deg, #2a2a2f, #0b0b0d); box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08) inset, 0 30px 60px -30px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(0 0 0 / 0.4);
+  }
+  .phone.sm { --w: 200px; border-radius: 28px; padding: 7px; }
+  .phone.lg { --w: 340px; }
+  /* The recordings are 9:16; the screen matches them exactly, so nothing is cropped. */
+  .screen { width: 100%; aspect-ratio: 9 / 16; border-radius: 29px; overflow: hidden; background: #000; position: relative; }
+  .sm .screen { border-radius: 22px; }
+  .screen :global(img), .screen :global(video) { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+</style>

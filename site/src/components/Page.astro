@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Why from './Why.astro';
+import Tour from './Tour.astro';
+import Screens from './Screens.astro';
+import Tech from './Tech.astro';
+import Download from './Download.astro';
+import type { Lang } from '../data/content';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+---
+<Base lang={lang}>
+  <Hero lang={lang} />
+  <Why lang={lang} />
+  <Tour lang={lang} />
+  <Screens lang={lang} />
+  <Tech lang={lang} />
+  <Download lang={lang} />
+</Base>
