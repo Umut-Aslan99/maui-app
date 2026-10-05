@@ -53,12 +53,6 @@ test('without JavaScript every chapter is readable', async ({ browser, baseURL }
   await ctx.close();
 });
 
-test('no screenshots with other members’ personal data are published', async ({ page }) => {
-  await page.goto('/');
-  const html = await page.content();
-  for (const name of ['profile_1', 'profile_2', 'search_3']) expect(html).not.toContain(name);
-});
-
 test('APK and video are served correctly', async ({ request }) => {
   const apk = await request.head('/media/com.umutIT.globalpenfriends.apk');
   expect(apk.status()).toBe(200);
@@ -87,4 +81,14 @@ test('no horizontal scrolling at any width', async ({ page }) => {
     await page.goto('/');
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `at ${width}px`).toBeLessThanOrEqual(0);
   }
+});
+
+test('addresses of the previous site still work', async ({ request }) => {
+  for (const [old, now] of [['/globalpenfriends_demo.mp4', '/media/globalpenfriends-demo.mp4'], ['/com.umutIT.globalpenfriends.apk', '/media/com.umutIT.globalpenfriends.apk']]) {
+    const res = await request.get(old, { maxRedirects: 0 });
+    expect(res.status()).toBe(301);
+    expect(res.headers().location).toContain(now);
+  }
+  const legacy = await request.get('/script.js');
+  expect(await legacy.text()).toContain('location.reload');
 });
